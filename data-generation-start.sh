@@ -47,13 +47,16 @@ sleep 15
 step_function "Create Kafka topics"
 cd $KAFKA_HOME
 SOME_VAR=`(sh bin/kafka-topics.sh --list --bootstrap-server localhost:9092)`
-echo $SOME_VAR
-bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic ss7-raw-input
-bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic ss7-preprocessed
 
+if [[ ${#SOME_VAR} -gt 0 ]]
+then
+  print_function "Seems that topics has already been created. Topics: $SOME_VAR"
+else
+  bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic ss7-raw-input
+  bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic ss7-preprocessed
+fi
 
 SOME_VAR=`(sh bin/kafka-topics.sh --list --bootstrap-server localhost:9092)`
-echo $SOME_VAR
 
 if [[ ${#SOME_VAR} -gt 0 ]]
 then
