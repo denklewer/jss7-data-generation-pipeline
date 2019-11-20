@@ -23,7 +23,7 @@ print_function () {
   echo "["$now"]" $1
 }
 
-#Script Start
+
 step_function "Start ZooKeeper"
 gnome-terminal --tab --working-directory=$KAFKA_HOME \
                -t ZooKeeper \
@@ -50,7 +50,7 @@ SOME_VAR=`(sh bin/kafka-topics.sh --list --bootstrap-server localhost:9092)`
 
 if [[ ${#SOME_VAR} -gt 0 ]]
 then
-  print_function "Seems that topics has already been created. Topics: $SOME_VAR"
+  print_function "Seems that topics have already been created. Topics: $SOME_VAR"
 else
   bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic ss7-raw-input
   bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic ss7-preprocessed
@@ -60,22 +60,22 @@ SOME_VAR=`(sh bin/kafka-topics.sh --list --bootstrap-server localhost:9092)`
 
 if [[ ${#SOME_VAR} -gt 0 ]]
 then
-  print_function "Topics has been created. Kafka OK"
+  print_function "Topics have been created. Kafka OK"
 else
-  print_function "Topics has not been created. Kafka Failure"
+  print_function "Topics have not been created. Kafka Failure"
 fi
 
 step_function "Run logstash. WARNING:enter user credentials in terminal"
-gnome-terminal --tab \
+sudo gnome-terminal --tab \
                --working-directory=$LOGSTASH_HOME \
 			   -t Logstash \
-			   -- bash -c "sudo ./bin/logstash -f $WD/tshark-kafka-es.conf; exec bash"
+			   -- bash -c "./bin/logstash -f $WD/tshark-kafka-es.conf; exec bash"
 
 step_function "Run attack simulator"
 gnome-terminal --tab \
                --working-directory=$ATTACK_SIMULATOR_BIN \
 			   -t Attack_Simulator \
-			   -- bash -c "run.sh attack_simulator -a complex -s 2; exec bash"
+			   -- bash -c "./run.sh attack_simulator -a complex -s 2; exec bash"
 
 
 
